@@ -117,7 +117,15 @@ export function CalculateMethod() {
   const handleClientChange = (client: string) => {
     setSelectedClient(client)
     if (client !== 'None' && clientsData[client]) {
-      setFormData(clientsData[client])
+      const data = clientsData[client]
+      setFormData(data)
+
+      setErrors({
+        niche: false,
+        revenueRange: false,
+        averageTicket: false,
+        monthlyInvestment: false,
+      })
     } else {
       setFormData(defaultValues)
     }
