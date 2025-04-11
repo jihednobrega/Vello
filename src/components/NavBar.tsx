@@ -36,7 +36,7 @@ export function NavBar() {
 
         <div className="py-5">
           <div className="flex flex-col gap-2">
-            <NavItem icon="general-icon" title="Visão Geral" to="/" />
+            <NavItem icon="general-icon" title="Visão Geral" to="/home" />
             <NavItem icon="calculator" title="Calculadora" to="calculator" />
             <NavItem icon="schedule" title="Media Planner" to="media-planner" />
             <NavItem icon="stats" title="Relatórios" to="reports" />
