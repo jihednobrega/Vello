@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vercel-build": "npm install --legacy-peer-deps && vite build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.0",
@@ -32,5 +33,11 @@
     "globals": "^15.15.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
+  },
+  "overrides": {
+    "react-day-picker": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    }
   }
 }
