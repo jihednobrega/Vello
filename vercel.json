@@ -2,8 +2,7 @@
   "build": {
     "env": {
       "TS_NODE_PROJECT": "tsconfig.app.json"
-    },
-    "buildCommand": "npm run vercel-build"
+    }
   },
   "rewrites": [
     {
