@@ -2,7 +2,8 @@
   "build": {
     "env": {
       "TS_NODE_PROJECT": "tsconfig.app.json"
-    }
+    },
+    "npmCommand": "npm install --legacy-peer-deps"
   },
   "rewrites": [
     {
