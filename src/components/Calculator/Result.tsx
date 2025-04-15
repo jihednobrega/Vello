@@ -1,47 +1,23 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { ScoreItem } from './ScoreItem'
 import { InfoTable } from './InfoTable'
 import { Select } from './Select'
 import { RadialChart } from '../RadialChart'
+import { methods } from '../../data/methods'
+import { headerTableColumns, tableDatas } from '../../data/resultTableData'
 
 interface ModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
-const columns = [
-  { header: 'Nicho', accessor: 'niche' },
-  { header: 'Ticket Médio', accessor: 'averageTicket' },
-  { header: 'Faixa de Faturamento', accessor: 'revenueRange' },
-  { header: 'Investimento Mensal', accessor: 'monthlyInvestment' },
-]
-
-const data = [
-  {
-    niche: 'Moda',
-    averageTicket: 'R$ 25.000,00',
-    revenueRange: 'R$ 25.000,00',
-    monthlyInvestment: 'R$ 25.000,00',
-  },
-]
-
-const methodOptions = [
-  'ROAS',
-  '% Aprovação',
-  '% Sessões',
-  '% Conversão',
-  'CPA (Custo por Aquisição)',
-  'CPS (Custo por Sessão)',
-  '% Inv X Fat',
-  'CPC Google Ads',
-]
-
 export function Result() {
   const navigate = useNavigate()
   const [showModal, setShowModal] = useState(false)
-  const location = useLocation()
-  const { selectedMethodName } = location.state || {}
+  const { method } = useParams()
+  const methodId = methods.find((m) => m.id === method)
+  const methodName = methodId?.name ?? 'Método'
 
   const toggleModal = () => setShowModal(!showModal)
 
@@ -57,11 +33,11 @@ export function Result() {
           </button>
 
           <Select
-            value={selectedMethodName}
+            value={methodName}
             description="Você está calculando:"
             onChange={() => {}}
-            options={methodOptions}
-            placeholder="Roas"
+            options={methods.map((m) => m.name)}
+            placeholder={methodName}
             containerClass="w-[25.625rem] h-full min-h-10"
             disabled
           />
@@ -123,8 +99,8 @@ export function Result() {
             </p>
 
             <InfoTable
-              columns={columns}
-              data={data}
+              columns={headerTableColumns}
+              data={tableDatas}
               columnSize="smaller"
               containerClass="mt-3"
             />

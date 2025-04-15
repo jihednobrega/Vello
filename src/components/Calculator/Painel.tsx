@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from 'react'
+import { CalendarDemo } from './Calendar'
 import { InfoTable } from './InfoTable'
 
 const columns = [
@@ -63,6 +65,25 @@ const data = [
 ]
 
 export function Painel() {
+  const [selectedDate, setSelectedDate] = useState('Jan 1 - Dez 31, 2024')
+  const [showCalendar, setShowCalendar] = useState(false)
+
+  const calendarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        calendarRef.current &&
+        !calendarRef.current.contains(event.target as Node)
+      ) {
+        setShowCalendar(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
   return (
     <div className="flex flex-col gap-2 ">
       <div className="pt-4 flex justify-between items-center">
@@ -70,14 +91,30 @@ export function Painel() {
           Últimos cálculos
         </h2>
 
-        <div className="p-3 flex items-center gap-2 border border-[#f0f0f0] shadow rounded-md cursor-pointer hover:bg-[#f6f6f6] dark:bg-zinc-600 dark:hover:bg-zinc-500">
-          <img src="/assets/calendar.svg" />
-          <span className="text-sm font-medium text-[#212529] dark:text-zinc-200">
-            Jan 1 - Dez 31, 2024
-          </span>
+        <div ref={calendarRef} className="relative">
+          <div
+            className={`w-full h-[3.5rem] px-4 flex items-center justify-between border rounded-lg shadow cursor-pointer bg-white dark:bg-zinc-700 
+    ${showCalendar ? 'border-[#6c7275] dark:border-zinc-300' : 'border-[#6c727541] hover:border-[#6c727588] dark:border-zinc-500 dark:hover:border-zinc-400'}`}
+            onClick={() => setShowCalendar(!showCalendar)}
+          >
+            <div className="flex items-center gap-2">
+              <img src="/assets/calendar.svg" />
+              <span className="text-sm font-medium text-[#212529] dark:text-zinc-200">
+                {selectedDate}
+              </span>
+            </div>
+          </div>
+
+          {showCalendar && (
+            <div className="absolute top-[110%] right-0 z-10">
+              <CalendarDemo
+                onChange={(formattedDate) => setSelectedDate(formattedDate)}
+                onClose={() => setShowCalendar(false)}
+              />
+            </div>
+          )}
         </div>
       </div>
-
       <div className="bg-[#f9f9f9] mb-2 rounded-xl p-1.5 border border-[#dfdfdf] flex flex-col dark:bg-zinc-700 dark:border-zinc-600 overflow-auto scrollbar-none max-viewport-height">
         <InfoTable
           columns={columns}

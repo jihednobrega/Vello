@@ -55,7 +55,11 @@ export function NavBar() {
               plusIcon
               to="checklist"
             />
-            <NavItem icon="offer-icon" title="Ofertas" to="offers" />
+            <NavItem
+              icon="offer-icon"
+              title="Construtor de Ofertas"
+              to="offers"
+            />
           </div>
         </div>
       </div>

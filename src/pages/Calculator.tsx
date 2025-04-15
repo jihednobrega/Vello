@@ -69,8 +69,8 @@ export function Calculator() {
         {visibleContent === 'calculator' ? (
           <Routes>
             <Route index element={<MethodSelection />} />
-            <Route path="calculate" element={<CalculateMethod />} />
-            <Route path="calculate/result" element={<Result />} />
+            <Route path=":method" element={<CalculateMethod />} />
+            <Route path=":method/result" element={<Result />} />
           </Routes>
         ) : (
           <Painel />

@@ -1,7 +1,16 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router'
+import { useNavigate, useLocation, useParams } from 'react-router'
 import { Select } from './Select'
 import { SelectInput } from './SelectInput'
+import { methods } from '../../data/methods'
+import {
+  clientsData,
+  defaultFormValues,
+  investmentOptions,
+  nicheOptions,
+  revenueRangeOptions,
+  ticketOptions,
+} from '../../data/selectOptions'
 
 interface FormData {
   niche: string
@@ -10,94 +19,14 @@ interface FormData {
   monthlyInvestment: string
 }
 
-interface ClientData {
-  [key: string]: {
-    niche: string
-    revenueRange: string
-    averageTicket: string
-    monthlyInvestment: string
-  }
-}
-
-const defaultValues = {
-  niche: '',
-  revenueRange: '',
-  averageTicket: '',
-  monthlyInvestment: '',
-}
-
-const clientsData: ClientData = {
-  'Mio Capelli': {
-    niche: 'Fashion',
-    revenueRange: '100k-500k',
-    averageTicket: '50',
-    monthlyInvestment: '1000',
-  },
-  Nike: {
-    niche: 'Sports',
-    revenueRange: '500k-1M',
-    averageTicket: '80',
-    monthlyInvestment: '5000',
-  },
-  Apple: {
-    niche: 'Technology',
-    revenueRange: '1M+',
-    averageTicket: '120',
-    monthlyInvestment: '10000',
-  },
-}
-
-const nicheOptions = [
-  'Moda e Acessórios',
-  'Beleza e Cosméticos',
-  'Suplementos e Saúde',
-  'Pet Shop',
-  'Casa e Decoração',
-  'Eletrônicos e Tecnologia',
-]
-
-const revenueRangeOptions = [
-  'Até R$10 mil/mês',
-  'De R$10 mil a R$30 mil/mês',
-  'De R$30 mil a R$70 mil/mês',
-  'De R$70 mil a R$150 mil/mês',
-  'De R$150 mil a R$300 mil/mês',
-  'Acima de R$300 mil/mês',
-]
-
-const ticketOptions = [
-  'Até R$50',
-  'De R$51 a R$100',
-  'De R$101 a R$200',
-  'De R$201 a R$500',
-  'De R$501 a R$1.000',
-  'Acima de R$1.000',
-]
-
-const investmentOptions = [
-  'Até R$500',
-  'De R$501 a R$1.000',
-  'De R$1.001 a R$2.000',
-  'De R$2.001 a R$5.000',
-  'De R$5.001 a R$10.000',
-  'Acima de R$10.000',
-]
-
-const methodOptions = [
-  'ROAS',
-  '% Aprovação',
-  '% Sessões',
-  '% Conversão',
-  'CPA (Custo por Aquisição)',
-  'CPS (Custo por Sessão)',
-  '% Inv X Fat',
-  'CPC Google Ads',
-]
-
 export function CalculateMethod() {
   const navigate = useNavigate()
+  const { method } = useParams()
+  const methodId = methods.find((m) => m.id === method)
+  const methodName = methodId?.name ?? 'Método'
   const location = useLocation()
-  const [formData, setFormData] = useState<FormData>(defaultValues)
+
+  const [formData, setFormData] = useState<FormData>(defaultFormValues)
   const { selectedMethodName } = location.state || {}
   const [selectedMethod, setSelectedMethod] = useState<string>(
     selectedMethodName || '',
@@ -114,6 +43,18 @@ export function CalculateMethod() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleMethodChange = (selectedName: string) => {
+    const selected = methods.find((m) => m.name === selectedName)
+    if (selected) {
+      setSelectedMethod(selected.name)
+      navigate(`/calculator/${selected.id}`, {
+        state: {
+          selectedMethodName: selected.name,
+        },
+      })
+    }
+  }
+
   const handleClientChange = (client: string) => {
     setSelectedClient(client)
     if (client !== 'None' && clientsData[client]) {
@@ -127,7 +68,7 @@ export function CalculateMethod() {
         monthlyInvestment: false,
       })
     } else {
-      setFormData(defaultValues)
+      setFormData(defaultFormValues)
     }
   }
 
@@ -141,11 +82,11 @@ export function CalculateMethod() {
           Voltar
         </button>
         <Select
-          value={selectedMethod}
+          value={selectedMethod || methodName}
           description="Você está calculando:"
-          onChange={setSelectedMethod}
-          options={methodOptions}
-          placeholder={selectedMethodName}
+          onChange={handleMethodChange}
+          options={methods.map((method) => method.name)}
+          placeholder={methodName}
           containerClass="w-[25.625rem] h-full"
         />
       </div>
@@ -347,7 +288,7 @@ export function CalculateMethod() {
             const isValid = Object.values(newErrors).every((v) => v === false)
 
             if (isValid) {
-              navigate('/calculator/calculate/result', {
+              navigate(`/calculator/${method}/result`, {
                 state: {
                   selectedMethodName: selectedMethod,
                 },
